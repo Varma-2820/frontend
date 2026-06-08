@@ -1,4 +1,5 @@
 <script setup lang="ts">
+const { public: { apiBase } } = useRuntimeConfig()
 useHead({ title: 'Help Centre — Rang Mahal' })
 
 const route = useRoute()
@@ -19,7 +20,7 @@ const { toast } = useShop()
 async function track() {
   if (!orderId.value.trim()) { toast('Enter your order ID'); return }
   try {
-    const res = await $fetch<any>(`http://localhost:3001/api/orders/${orderId.value.trim().toUpperCase()}`)
+    const res = await $fetch<any>(`${apiBase}/orders/${orderId.value.trim().toUpperCase()}`)
     trackedOrder.value = res
   } catch (err: any) {
     trackedOrder.value = null

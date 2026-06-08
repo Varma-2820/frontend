@@ -1,6 +1,7 @@
 import type { Product } from '~/composables/products'
 
 export default defineNuxtPlugin(async () => {
+  const { public: { apiBase } } = useRuntimeConfig()
   const cart = useCart()
   const wishlist = useWishlist()
   const user = useUser()
@@ -13,7 +14,7 @@ export default defineNuxtPlugin(async () => {
   try { token.value = localStorage.getItem('rm-token') || null } catch { token.value = null }
 
   try {
-    const data = await $fetch<Product[]>('http://localhost:3001/api/products')
+    const data = await $fetch<Product[]>(`${apiBase}/products`)
     products.value = data
   } catch (err) {
     console.error('Failed to load products from API:', err)
@@ -21,14 +22,14 @@ export default defineNuxtPlugin(async () => {
 
   if (token.value) {
     try {
-      const data = await $fetch<{ id: number; name: string; email: string }>('http://localhost:3001/api/auth/me', {
+      const data = await $fetch<{ id: number; name: string; email: string }>(`${apiBase}/auth/me`, {
         headers: {
           'Authorization': `Bearer ${token.value}`
         }
       })
       user.value = data
 
-      const dbCart = await $fetch<Array<{ product_id: number; qty: number }>>('http://localhost:3001/api/cart', {
+      const dbCart = await $fetch<Array<{ product_id: number; qty: number }>>(`${apiBase}/cart`, {
         headers: {
           'Authorization': `Bearer ${token.value}`
         }
@@ -40,7 +41,7 @@ export default defineNuxtPlugin(async () => {
       cart.value = mergedCart
       localStorage.setItem('rm-cart', JSON.stringify(cart.value))
 
-      const wishData = await $fetch<number[]>('http://localhost:3001/api/wishlist', {
+      const wishData = await $fetch<number[]>(`${apiBase}/wishlist`, {
         headers: {
           'Authorization': `Bearer ${token.value}`
         }

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+const { public: { apiBase } } = useRuntimeConfig()
 const route = useRoute()
 const router = useRouter()
 
@@ -28,7 +29,7 @@ const TITLES: Record<string, string> = {
 const title = computed(() => q.value ? `Results for “${q.value}”` : (TITLES[cat.value] || 'All Pieces'))
 useHead({ title: computed(() => `${title.value} — Rang Mahal`) })
 
-const { data: filteredProducts } = await useFetch<any[]>('http://localhost:3001/api/products', {
+const { data: filteredProducts } = await useFetch<any[]>(`${apiBase}/products`, {
   query: computed(() => ({
     cat: cat.value !== 'all' ? cat.value : undefined,
     q: q.value || undefined,

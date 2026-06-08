@@ -11,6 +11,7 @@ export const useSearchOpen = () => useState<boolean>('searchOpen', () => false)
 let toastTimer: ReturnType<typeof setTimeout> | null = null
 
 export function useShop() {
+  const { public: { apiBase } } = useRuntimeConfig()
   const cart = useCart()
   const wishlist = useWishlist()
   const user = useUser()
@@ -42,7 +43,7 @@ export function useShop() {
     if (token.value) {
       headers['Authorization'] = `Bearer ${token.value}`
     }
-    return $fetch<T>(`http://localhost:3001/api${path}`, {
+    return $fetch<T>(`${apiBase}${path}`, {
       ...options,
       headers
     })

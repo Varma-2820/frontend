@@ -1,8 +1,9 @@
 <script setup lang="ts">
+const { public: { apiBase } } = useRuntimeConfig()
 const route = useRoute()
 const { addToCart, toggleWish, isWished } = useShop()
 
-const { data: product, error } = await useFetch<any>(() => `http://localhost:3001/api/products/${route.params.id}`)
+const { data: product, error } = await useFetch<any>(() => `${apiBase}/products/${route.params.id}`)
 if (error.value || !product.value) {
   throw createError({ statusCode: 404, statusMessage: 'Product not found', fatal: true })
 }
@@ -24,7 +25,7 @@ const discount = computed(() => {
   return p.mrp ? Math.round((1 - p.price / p.mrp) * 100) : 0
 })
 
-const { data: relatedProducts } = await useFetch<any[]>('http://localhost:3001/api/products', {
+const { data: relatedProducts } = await useFetch<any[]>(`${apiBase}/products`, {
   query: computed(() => ({
     cat: product.value?.cat
   })),
